@@ -1,5 +1,7 @@
 package com.example.productservicenov24.controllers;
 
+import com.example.productservicenov24.exceptions.ProductRelatedException;
+import com.example.productservicenov24.exceptions.RestTemplateRelatedException;
 import com.example.productservicenov24.models.Product;
 import com.example.productservicenov24.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -18,29 +20,29 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) {
+    public Product getProductById(@PathVariable Long id) throws RestTemplateRelatedException {
 
         return productService.getProductById(id);
     }
     @GetMapping("")
-    public List<Product> getAllProducts() {
+    public List<Product> getAllProducts() throws RestTemplateRelatedException, ProductRelatedException {
         List<Product> products = productService.getProducts();
         return products;
     }
     @PostMapping("")
-    public Product addProduct(@RequestBody Product product) {
+    public Product addProduct(@RequestBody Product product) throws RestTemplateRelatedException {
         return productService.addProduct(product);
     }
     @PatchMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) {
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product product) throws RestTemplateRelatedException {
         return productService.updateProduct(id, product);
     }
     @PutMapping("/{id}")
-    public Product replaceProductById(@PathVariable Long id, @RequestBody Product product) {
+    public Product replaceProductById(@PathVariable Long id, @RequestBody Product product) throws RestTemplateRelatedException {
         return productService.replaceProduct(id,product);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProductById(@PathVariable Long id) {
+    public ResponseEntity<String> deleteProductById(@PathVariable Long id) throws RestTemplateRelatedException {
         productService.deleteProduct(id);
         return new ResponseEntity<>("Product with id : "+id+" got deleted successfully", HttpStatus.OK);
     }
