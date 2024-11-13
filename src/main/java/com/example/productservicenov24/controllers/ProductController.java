@@ -4,6 +4,7 @@ import com.example.productservicenov24.exceptions.ProductRelatedException;
 import com.example.productservicenov24.exceptions.RestTemplateRelatedException;
 import com.example.productservicenov24.models.Product;
 import com.example.productservicenov24.services.ProductService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,12 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
-    public ProductController(ProductService productService){
+    public ProductController(@Qualifier("selfproductservice") ProductService productService){
 
         this.productService = productService;
     }
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) throws RestTemplateRelatedException {
+    public Product getProductById(@PathVariable Long id) throws RestTemplateRelatedException, ProductRelatedException {
 
         return productService.getProductById(id);
     }
@@ -30,7 +31,7 @@ public class ProductController {
         return products;
     }
     @PostMapping("")
-    public Product addProduct(@RequestBody Product product) throws RestTemplateRelatedException {
+    public Product addProduct(@RequestBody Product product) throws RestTemplateRelatedException, ProductRelatedException {
         return productService.addProduct(product);
     }
     @PatchMapping("/{id}")
