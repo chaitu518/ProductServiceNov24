@@ -34,41 +34,34 @@ public class SelfProductService implements ProductService {
     @Override
     public List<Product> getProducts() throws RestTemplateRelatedException, ProductRelatedException {
         List<Product> products = productRepo.findAll();
+        if (products==null) {
+            throw new ProductRelatedException("No products found");
+        }
         return products;
     }
 
     @Override
     public Product addProduct(Product product) throws RestTemplateRelatedException, ProductRelatedException {
         Category category = product.getCategory();
-        if (category == null) {
+        Product product1 =null;
+        if(category==null || category.getTitle()==null) {
             throw new ProductRelatedException("Category is null");
         }
-        else if (category.getTitle() == null ) {
-            throw new ProductRelatedException("Category title is null");
-        }
         else if(category.getId()==null){
-            Optional<Category> categoryOptional = repo.findByTitle(category.getTitle());
-            if (categoryOptional.isEmpty()) {
-                Category newCategory = new Category();
-                newCategory.setTitle(category.getTitle());
-                category = repo.save(newCategory);
-            }
-            else{
-                category = categoryOptional.get();
-            }
+            //nothing
         }
         else{
             Optional<Category> categoryOptional=repo.findById(category.getId());
-            if (categoryOptional.isEmpty()) {
-                Category newCategory = new Category();
-                newCategory.setTitle(category.getTitle());
-                category = repo.save(newCategory);
+            if(categoryOptional.isPresent()) {
+                category = categoryOptional.get();
             }
-            category = categoryOptional.get();
-
+            else {
+                category.setId(null);
+            }
         }
         product.setCategory(category);
-        return productRepo.save(product);
+        product1= productRepo.save(product);
+        return product1;
 
     }
 
@@ -79,7 +72,7 @@ public class SelfProductService implements ProductService {
 
     @Override
     public void deleteProduct(Long id) throws RestTemplateRelatedException {
-
+        productRepo.deleteById(id);
     }
 
     @Override
