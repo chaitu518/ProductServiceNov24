@@ -4,6 +4,9 @@ import com.example.productservicenov24.exceptions.ProductRelatedException;
 import com.example.productservicenov24.exceptions.RestTemplateRelatedException;
 import com.example.productservicenov24.models.Product;
 import com.example.productservicenov24.services.ProductService;
+import com.example.productservicenov24.services.TokenService;
+import jakarta.servlet.annotation.HttpMethodConstraint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,12 +19,17 @@ import java.util.List;
 @RequestMapping("/products")
 public class ProductController {
     private ProductService productService;
+    @Autowired
+    private TokenService tokenService;
     public ProductController(@Qualifier("selfproductservice") ProductService productService){
 
         this.productService = productService;
     }
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable Long id) throws RestTemplateRelatedException, ProductRelatedException {
+    public Product getProductById(@RequestHeader("Token") String token, @PathVariable Long id) throws RestTemplateRelatedException, ProductRelatedException {
+        if(!tokenService.validateToken(token)){
+            throw new RestTemplateRelatedException("Token is not valid");
+        }
 
         return productService.getProductById(id);
     }
