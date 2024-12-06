@@ -26,10 +26,11 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping("/{id}")
-    public Product getProductById(@RequestHeader("Token") String token, @PathVariable Long id) throws RestTemplateRelatedException, ProductRelatedException {
-        if(!tokenService.validateToken(token)){
-            throw new RestTemplateRelatedException("Token is not valid");
-        }
+    public Product getProductById(@PathVariable Long id) throws RestTemplateRelatedException, ProductRelatedException {
+//        @RequestHeader("Token") String token
+//        if(!tokenService.validateToken(token)){
+//            throw new RestTemplateRelatedException("Token is not valid");
+//        }
 
         return productService.getProductById(id);
     }
