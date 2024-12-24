@@ -8,10 +8,12 @@ import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Entity(name = "products")
-public class Product extends BaseModel {
+public class Product extends BaseModel implements Serializable {
     private double price;
     private String description;
     @ManyToOne(cascade = CascadeType.PERSIST)

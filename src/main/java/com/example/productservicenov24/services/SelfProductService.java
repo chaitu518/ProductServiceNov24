@@ -7,6 +7,8 @@ import com.example.productservicenov24.models.Product;
 import com.example.productservicenov24.projections.TitleAndDescription;
 import com.example.productservicenov24.repositories.CategoryRepo;
 import com.example.productservicenov24.repositories.ProductRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,16 +17,24 @@ import java.util.Optional;
 public class SelfProductService implements ProductService {
     CategoryRepo repo;
     ProductRepo productRepo;
+    @Autowired
+    RedisTemplate<String,Object> redisTemplate;
     public SelfProductService(CategoryRepo repo,ProductRepo productRepo) {
         this.repo = repo;
         this.productRepo = productRepo;
     }
     @Override
     public Product getProductById(Long id) throws RestTemplateRelatedException, ProductRelatedException {
+        Product redproudct = (Product) redisTemplate.opsForHash().get("PRODUCTS","PRODUCT_"+id);
+        if (redproudct != null) {
+            //hit
+            return redproudct;
+        }
         Optional<Product> product = productRepo.findById(id);
         //TitleAndDescription td = productRepo.getWithTitleAndDescription(id);
         //System.out.println(td.getTitle()+" "+td.getDescription());
         if (product.isPresent()) {
+            redisTemplate.opsForHash().put("PRODUCTS","PRODUCT_"+id,product.get());
             return product.get();
         }
         throw new ProductRelatedException("Product with Id "+id+" not Found");

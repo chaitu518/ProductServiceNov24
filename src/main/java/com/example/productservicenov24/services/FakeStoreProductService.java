@@ -5,6 +5,7 @@ import com.example.productservicenov24.exceptions.ProductRelatedException;
 import com.example.productservicenov24.exceptions.RestTemplateRelatedException;
 import com.example.productservicenov24.models.Category;
 import com.example.productservicenov24.models.Product;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -18,8 +19,10 @@ import java.util.List;
 @Service("fakeproductservice")
 public class FakeStoreProductService implements ProductService {
     RestTemplate restTemplate;
+
     public FakeStoreProductService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
+
     }
     public Product getProductById(Long id) throws RestTemplateRelatedException {
         try {

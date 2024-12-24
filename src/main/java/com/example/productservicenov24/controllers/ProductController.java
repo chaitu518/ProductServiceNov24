@@ -21,6 +21,7 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private TokenService tokenService;
+
     public ProductController(@Qualifier("selfproductservice") ProductService productService){
 
         this.productService = productService;
@@ -31,7 +32,6 @@ public class ProductController {
 //        if(!tokenService.validateToken(token)){
 //            throw new RestTemplateRelatedException("Token is not valid");
 //        }
-
         return productService.getProductById(id);
     }
     @GetMapping("")
